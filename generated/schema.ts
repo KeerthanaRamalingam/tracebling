@@ -528,6 +528,40 @@ export class Collection extends Entity {
     }
   }
 
+  get tokenAddress(): string | null {
+    let value = this.get("tokenAddress");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tokenAddress(value: string | null) {
+    if (value === null) {
+      this.unset("tokenAddress");
+    } else {
+      this.set("tokenAddress", Value.fromString(value as string));
+    }
+  }
+
+  get tokenName(): string | null {
+    let value = this.get("tokenName");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tokenName(value: string | null) {
+    if (value === null) {
+      this.unset("tokenName");
+    } else {
+      this.set("tokenName", Value.fromString(value as string));
+    }
+  }
+
   get bidList(): Array<string> | null {
     let value = this.get("bidList");
     if (value === null || value.kind == ValueKind.NULL) {
@@ -602,25 +636,8 @@ export class Bid extends Entity {
     this.set("auctionID", Value.fromBigInt(value));
   }
 
-  get bidder(): string | null {
-    let value = this.get("bidder");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set bidder(value: string | null) {
-    if (value === null) {
-      this.unset("bidder");
-    } else {
-      this.set("bidder", Value.fromString(value as string));
-    }
-  }
-
-  get amount(): BigInt | null {
-    let value = this.get("amount");
+  get number(): BigInt | null {
+    let value = this.get("number");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -628,129 +645,12 @@ export class Bid extends Entity {
     }
   }
 
-  set amount(value: BigInt | null) {
+  set number(value: BigInt | null) {
     if (value === null) {
-      this.unset("amount");
+      this.unset("number");
     } else {
-      this.set("amount", Value.fromBigInt(value as BigInt));
+      this.set("number", Value.fromBigInt(value as BigInt));
     }
-  }
-
-  get endTime(): BigInt | null {
-    let value = this.get("endTime");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set endTime(value: BigInt | null) {
-    if (value === null) {
-      this.unset("endTime");
-    } else {
-      this.set("endTime", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get transactionHash(): string | null {
-    let value = this.get("transactionHash");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set transactionHash(value: string | null) {
-    if (value === null) {
-      this.unset("transactionHash");
-    } else {
-      this.set("transactionHash", Value.fromString(value as string));
-    }
-  }
-
-  get timestamp(): BigInt | null {
-    let value = this.get("timestamp");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set timestamp(value: BigInt | null) {
-    if (value === null) {
-      this.unset("timestamp");
-    } else {
-      this.set("timestamp", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get action(): string | null {
-    let value = this.get("action");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set action(value: string | null) {
-    if (value === null) {
-      this.unset("action");
-    } else {
-      this.set("action", Value.fromString(value as string));
-    }
-  }
-
-  get colDetails(): string {
-    let value = this.get("colDetails");
-    return value.toString();
-  }
-
-  set colDetails(value: string) {
-    this.set("colDetails", Value.fromString(value));
-  }
-}
-
-export class UpdatedBid extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save UpdatedBid entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save UpdatedBid entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("UpdatedBid", id.toString(), this);
-  }
-
-  static load(id: string): UpdatedBid | null {
-    return store.get("UpdatedBid", id) as UpdatedBid | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get auctionID(): BigInt {
-    let value = this.get("auctionID");
-    return value.toBigInt();
-  }
-
-  set auctionID(value: BigInt) {
-    this.set("auctionID", Value.fromBigInt(value));
   }
 
   get bidder(): string | null {

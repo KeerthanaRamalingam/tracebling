@@ -172,6 +172,14 @@ export class ReserveAuctionCreated__Params {
   get auctionId(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
+
+  get paymentMode(): Address {
+    return this._event.parameters[5].value.toAddress();
+  }
+
+  get name(): string {
+    return this._event.parameters[6].value.toString();
+  }
 }
 
 export class ReserveAuctionFinalized extends ethereum.Event {
@@ -257,6 +265,28 @@ export class ReserveAuctionUpdated__Params {
 
   get reservePrice(): BigInt {
     return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class TokenAdded extends ethereum.Event {
+  get params(): TokenAdded__Params {
+    return new TokenAdded__Params(this);
+  }
+}
+
+export class TokenAdded__Params {
+  _event: TokenAdded;
+
+  constructor(event: TokenAdded) {
+    this._event = event;
+  }
+
+  get tokenAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get status(): boolean {
+    return this._event.parameters[1].value.toBoolean();
   }
 }
 
@@ -371,6 +401,10 @@ export class Market__getReserveAuctionResultValue0Struct extends ethereum.Tuple 
 
   get amount(): BigInt {
     return this[6].toBigInt();
+  }
+
+  get paymentMode(): Address {
+    return this[7].toAddress();
   }
 }
 
@@ -584,7 +618,7 @@ export class Market extends ethereum.SmartContract {
   ): Market__getReserveAuctionResultValue0Struct {
     let result = super.call(
       "getReserveAuction",
-      "getReserveAuction(uint256):((address,uint256,address,uint256,uint256,address,uint256))",
+      "getReserveAuction(uint256):((address,uint256,address,uint256,uint256,address,uint256,address))",
       [ethereum.Value.fromUnsignedBigInt(auctionId)]
     );
 
@@ -596,7 +630,7 @@ export class Market extends ethereum.SmartContract {
   ): ethereum.CallResult<Market__getReserveAuctionResultValue0Struct> {
     let result = super.tryCall(
       "getReserveAuction",
-      "getReserveAuction(uint256):((address,uint256,address,uint256,uint256,address,uint256))",
+      "getReserveAuction(uint256):((address,uint256,address,uint256,uint256,address,uint256,address))",
       [ethereum.Value.fromUnsignedBigInt(auctionId)]
     );
     if (result.reverted) {
@@ -672,6 +706,25 @@ export class Market extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
+
+  tokens(param0: Address): boolean {
+    let result = super.call("tokens", "tokens(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_tokens(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall("tokens", "tokens(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
 }
 
 export class AdminAccountMigrationCall extends ethereum.Call {
@@ -712,6 +765,40 @@ export class AdminAccountMigrationCall__Outputs {
   _call: AdminAccountMigrationCall;
 
   constructor(call: AdminAccountMigrationCall) {
+    this._call = call;
+  }
+}
+
+export class AdminAddTokenCall extends ethereum.Call {
+  get inputs(): AdminAddTokenCall__Inputs {
+    return new AdminAddTokenCall__Inputs(this);
+  }
+
+  get outputs(): AdminAddTokenCall__Outputs {
+    return new AdminAddTokenCall__Outputs(this);
+  }
+}
+
+export class AdminAddTokenCall__Inputs {
+  _call: AdminAddTokenCall;
+
+  constructor(call: AdminAddTokenCall) {
+    this._call = call;
+  }
+
+  get tokenAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get status(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
+  }
+}
+
+export class AdminAddTokenCall__Outputs {
+  _call: AdminAddTokenCall;
+
+  constructor(call: AdminAddTokenCall) {
     this._call = call;
   }
 }
@@ -862,6 +949,10 @@ export class CreateReserveAuctionCall__Inputs {
   get endDate(): BigInt {
     return this._call.inputValues[4].value.toBigInt();
   }
+
+  get paymentMode(): Address {
+    return this._call.inputValues[5].value.toAddress();
+  }
 }
 
 export class CreateReserveAuctionCall__Outputs {
@@ -949,8 +1040,12 @@ export class PlaceBidCall__Inputs {
     this._call = call;
   }
 
-  get auctionId(): BigInt {
+  get amount(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get auctionId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
   }
 }
 

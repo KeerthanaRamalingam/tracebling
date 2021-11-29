@@ -43,6 +43,8 @@ type Collection @entity {
   auctionTransactionHash: String
   auctionTimestamp: BigInt
   auctionAction: String
+  tokenAddress: String
+  tokenName: String
   bidList: [Bid!]
   history:[History!]
 }

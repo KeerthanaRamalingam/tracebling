@@ -6,9 +6,9 @@ dataSources:
     name: BlingMaster
     network: mumbai
     source:
-      address: "0x9082b259Aa72C0aE38505F2693DE92f67A3aDee3"
+      address: "0x789E8091C36367b4A3995585b995742A8bCEa820"
       abi: BlingMaster
-      startBlock: 21531413 
+      startBlock: 22057446 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -33,9 +33,9 @@ dataSources:
     name: Market
     network: mumbai
     source:
-      address: "0x45148432beCFf6a01aeF7ec59c9f222AeF69747f"
+      address: "0xE4eD4d5A8b9cb050E6F501f14D52C129a5431eb2"
       abi: Market
-      startBlock: 21531375
+      startBlock: 22057367
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -48,7 +48,7 @@ dataSources:
         - name: Market
           file: ./abis/Market.json
       eventHandlers:
-        - event: ReserveAuctionCreated(indexed address,indexed address,indexed uint256,uint256,uint256)
+        - event: ReserveAuctionCreated(indexed address,indexed address,indexed uint256,uint256,uint256,address,string)
           handler: handleReserveAuctionCreated
         - event: ReserveAuctionBidPlaced(indexed uint256,indexed address,uint256,uint256)
           handler: handleReserveAuctionBidPlaced 
@@ -57,8 +57,8 @@ dataSources:
         - event: ReserveAuctionFinalized(indexed uint256,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleReserveAuctionFinalized  
         - event: ReserveAuctionUpdated(indexed uint256,uint256)
-          handler: handleReserveAuctionUpdated  
-      file: ./src/mapping.ts      
+          handler: handleReserveAuctionUpdated
+      file: ./src/mapping.ts     
 templates:
   - kind: ethereum/contract
     name: Collection

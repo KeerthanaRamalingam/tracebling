@@ -163,6 +163,8 @@ export function handleReserveAuctionCreated(event: AuctionEvent): void {
     auction.auctionTransactionHash = event.transaction.hash.toHexString();
     auction.auctionTimestamp = event.block.timestamp;
     auction.auctionAction = "Auction Started";
+    auction.tokenAddress = event.params.paymentMode.toHexString();
+    auction.tokenName = event.params.name;
 
     let Mcontract = MarketContract.bind(event.address);
     let result = Mcontract.getReserveAuction(event.params.auctionId);
@@ -193,6 +195,7 @@ export function handleReserveAuctionCreated(event: AuctionEvent): void {
 export function handleReserveAuctionBidPlaced(event: BidsEvent): void {
   let auctionInstance = Auction.load(event.params.auctionId.toString());
   let bids = Bid.load(event.params.auctionId.toString());
+  // let userBid = UserBid.load(event.params.bidder.toString());
   let Mcontract = MarketContract.bind(event.address);
   let result = Mcontract.getReserveAuction(event.params.auctionId);
   let hex = result.tokenId.toString() + result.nftContract.toString();
