@@ -71,8 +71,25 @@ type Auction @entity {
 
 type History @entity {
   id: ID!
-  address: Bytes
-  timestamp: BigInt
-  action: String
-  amount: String
+  tokenID: BigInt
+  auctionID: String
+  mintAddress: Bytes
+  mintTimestamp: BigInt
+  mintAction: String
+  mintAmount: String
+  tokenAddress: String
+  tokenName: String
+  auctionAddress: Bytes
+  auctionTimestamp: BigInt
+  auctionAction: String
+  auctionAmount: String
+  finalizeAddress: Bytes
+  finalizeTimestamp: BigInt
+  finalizeAuction: String
+  updateTimestamp: BigInt
+  updateAuction: String
+  updateAmount: String
+  cancelTimestamp: BigInt
+  cancelAuction: String
+  bidList: [Bid!]
 }

@@ -128,19 +128,21 @@ export function handleMinted(event: MintedEvent): void {
 
   if (token.history.length == 0) {
     history = new History(event.params.tokenId.toString());
-    history.address = event.params.creator;
-    history.timestamp = event.block.timestamp;
-    history.action = "Token Minted";
-    history.amount = "0";
+    history.tokenID = event.params.tokenId;
+    history.mintAddress = event.params.creator;
+    history.mintTimestamp = event.block.timestamp;
+    history.mintAction = "Token Minted";
+    history.mintAmount = "0";
     let Htemp = token.history;
     token.history = Htemp.concat([history.id]);
     history.save();
   } else {
     history = new History(event.params.tokenId.toString());
-    history.address = event.params.creator;
-    history.timestamp = event.block.timestamp;
-    history.action = "Token Minted";
-    history.amount = "0";
+    history.tokenID = event.params.tokenId;
+    history.mintAddress = event.params.creator;
+    history.mintTimestamp = event.block.timestamp;
+    history.mintAction = "Token Minted";
+    history.mintAmount = "0";
     let Htemp = token.history;
     token.history = Htemp.concat([history.id]);
     history.save();
@@ -174,10 +176,13 @@ export function handleReserveAuctionCreated(event: AuctionEvent): void {
     auction.bidList = [];
 
     history = new History(event.params.tokenId.toString());
-    history.address = event.params.seller;
-    history.timestamp = event.block.timestamp;
-    history.action = "Auction Started";
-    history.amount = event.params.reservePrice.toString();
+    history.auctionID = event.params.auctionId.toString();
+    history.auctionAddress = event.params.seller;
+    history.auctionTimestamp = event.block.timestamp;
+    history.auctionAction = "Auction Started";
+    history.auctionAmount = event.params.reservePrice.toString();
+    history.tokenAddress = event.params.paymentMode.toHexString();
+    history.tokenName = event.params.name;
     let Htemp = auction.history;
     auction.history = Htemp.concat([history.id]);
     history.save();
@@ -200,7 +205,7 @@ export function handleReserveAuctionBidPlaced(event: BidsEvent): void {
   let result = Mcontract.getReserveAuction(event.params.auctionId);
   let hex = result.tokenId.toString() + result.nftContract.toString();
   let auction = Collection.load(hex);
-
+  let bidHistory = History.load(result.tokenId.toString());
   if (auction.bidList.length == 0) {
     bids = new Bid(event.transaction.hash.toString());
     bids.auctionID = event.params.auctionId;
@@ -217,6 +222,9 @@ export function handleReserveAuctionBidPlaced(event: BidsEvent): void {
 
     let temp = auction.bidList;
     auction.bidList = temp.concat([bids.id]);
+    let tempVar = bidHistory.bidList;
+    bidHistory.bidList = tempVar.concat([bids.id]);
+    bidHistory.save();
     auction.save();
   } else {
     bids = new Bid(event.transaction.hash.toString());
@@ -233,6 +241,9 @@ export function handleReserveAuctionBidPlaced(event: BidsEvent): void {
     auction.reservePrice = event.params.amount;
     let temp = auction.bidList;
     auction.bidList = temp.concat([bids.id]);
+    let tempVar = bidHistory.bidList;
+    bidHistory.bidList = tempVar.concat([bids.id]);
+    bidHistory.save();
     auction.save();
   }
   bids.save();
@@ -243,16 +254,35 @@ export function handleReserveAuctionCanceled(
 ): void {
   let auctionInstance = Auction.load(event.params.auctionId.toString());
   let auction = Collection.load(auctionInstance.index);
+
+  let history = History.load(auctionInstance.tokenID.toString());
+  history = new History(auctionInstance.tokenID.toString());
+  history.cancelTimestamp = event.block.timestamp;
+  history.cancelAuction="Auction Cancelled";
+  let Htemp = auction.history;
+  auction.history = Htemp.concat([history.id]);
+  history.save();
+
   auction.auctionID = "0";
   auction.auctionAction = "Auction Cancelled";
   auction.save();
 }
-
 export function handleReserveAuctionFinalized(
   event: ReserveAuctionFinalizedEvent
 ): void {
   let auctionInstance = Auction.load(event.params.auctionId.toString());
   let auction = Collection.load(auctionInstance.index);
+  let Mcontract = MarketContract.bind(event.address);
+  // let result = Mcontract.getReserveAuction(event.params.auctionId);
+  let history = History.load(auctionInstance.tokenID.toString());
+  history = new History(auctionInstance.tokenID.toString());
+  history.finalizeAddress = event.params.bidder;
+  history.finalizeTimestamp = event.block.timestamp;
+  history.finalizeAuction="Auction ended";
+  let Htemp = auction.history;
+  auction.history = Htemp.concat([history.id]);
+  history.save();
+
   auction.auctionAction = "Auction ended";
   auction.bidder = event.params.bidder;
   auction.owner = event.params.bidder;
@@ -264,6 +294,19 @@ export function handleReserveAuctionUpdated(
 ): void {
   let auctionInstance = Auction.load(event.params.auctionId.toString());
   let auction = Collection.load(auctionInstance.index);
-  if (auction) auction.reservePrice = event.params.reservePrice;
+  let Mcontract = MarketContract.bind(event.address);
+  let result = Mcontract.getReserveAuction(event.params.auctionId);
+  let history = History.load(result.tokenId.toString());
+  history = new History(result.tokenId.toString());
+  history.updateTimestamp = event.block.timestamp;
+  history.updateAuction="Auction updated";
+  history.updateAmount=event.params.reservePrice.toString();
+  let Htemp = auction.history;
+  auction.history = Htemp.concat([history.id]);
+  history.save();
+  if (auction) {
+    auction.reservePrice = event.params.reservePrice;
+    auction.auctionAction = "Auction updated";
+  }
   auction.save();
 }
