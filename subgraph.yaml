@@ -6,9 +6,9 @@ dataSources:
     name: BlingMaster
     network: mumbai
     source:
-      address: "0xB527A169FE1871564602c64dC09899C0Ad350a51"
+      address: "0xb0AeB14B30bCb89008396281DA94c496832A3615"
       abi: BlingMaster
-      startBlock: 22001456 
+      startBlock: 22065168 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -33,9 +33,9 @@ dataSources:
     name: Market
     network: mumbai
     source:
-      address: "0x91184D74d13d43892D77D35fB59aF774aD9DFe94"
+      address: "0x387E362cb719E92059729a603974e91687F3d909"
       abi: Market
-      startBlock: 22001431
+      startBlock: 22065143
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -43,6 +43,7 @@ dataSources:
       entities:
         - Collection
         - Bid
+        - BidPlaced
         - Auction
       abis:
         - name: Market

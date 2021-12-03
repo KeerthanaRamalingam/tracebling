@@ -48,11 +48,9 @@ type Collection @entity {
   bidList: [Bid!]
   history:[History!]
 }
-
 type Bid @entity {
   id: ID!
   auctionID: BigInt!
-  number: BigInt
   bidder: String # uint256
   amount: BigInt # uint256
   endTime: BigInt #uint256
@@ -61,6 +59,19 @@ type Bid @entity {
   action: String
   colDetails: Collection!
 }
+
+type BidPlaced @entity {
+  id: ID!
+  auctionID: BigInt!
+  bidder: String # uint256
+  amount: BigInt # uint256
+  endTime: BigInt #uint256
+  transactionHash: String
+  timestamp: BigInt
+  action: String
+  colDetails: Collection!
+}
+
 
 type Auction @entity {
   id: ID!
@@ -74,6 +85,7 @@ type History @entity {
   tokenID: BigInt
   auctionID: String
   mintAddress: Bytes
+  nftContractAddress: Bytes
   mintTimestamp: BigInt
   mintAction: String
   mintAmount: String
