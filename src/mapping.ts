@@ -42,6 +42,8 @@ export function handleCollectionCreated(event: CollectionCreatedEvent): void {
 
     let supply = CContract.totalSupply();
 
+    let brandName = CContract.brandName(event.params.creator);
+
     token.quantity = supply;
 
     collectionContract.create(event.params.myContract);
